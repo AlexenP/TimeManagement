@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Subtask</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div align="center">
+    <h1>Create New/ Edit Subtask</h1>
+    <br>
+    <form action="/subtasks/save" th:object="${subtask}" method="post">
+        <input type="hidden" name="taskId" th:field="*{taskId}">
+        <table border="0" cellpadding="10">
+            <input type="hidden" name="userId" th:field="*{subtaskId}">
+            <tr>
+                <td>Task Name:</td>
+                <td><input type="text" placeholder="Name" th:field="*{name}"></td>
+            </tr>
+            <tr>
+                <td>Time:</td>
+                <td>
+                    <label>
+                        <select th:field="*{time}">
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                        </select>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                </td>
+                <td align="right">
+                    <input type="submit" value="Salvati Subtask">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

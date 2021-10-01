@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Manager</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<h1 class="titlu_pagina">Time Manager App</h1>
+
+<span sec:authorize="!isAuthenticated()" align="center">
+    <form action="/login" method="post" id="form_login">
+        <p class="login_p">Username:</p><input type="text" name="username" placeholder="Enter your username" required>
+        <br>
+        <p class="login_p">Password:</p><input type="password" name="password" placeholder="Enter your password"
+                                               required>
+        <br>
+        <input type="submit" value="Login" id="input_login">
+    </form>
+</span>
+
+<div sec:authorize="isAuthenticated()" class="divs">
+    Welcome, <span sec:authentication="name"></span>!
+    <br>
+    User roles: <span sec:authentication="principal.authorities"></span>
+    <br>
+    <button>
+        <a href="/logout" class="color_white_a_href">Logout</a>
+    </button>
+
+</div>
+
+<div sec:authorize="hasAuthority('ADMIN')" class="divs">
+    <hr>
+    <table id="table1">
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="user: ${userList}">
+            <td th:text="${user.userId}"></td>
+            <td th:text="${user.username}"></td>
+            <td>
+                <button>
+                    <a th:href="@{${'/users/user-form/' + user.userId}}" class="color_white_a_href">Edit</a>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <p>Create another user:
+        <button>
+            <a href="/users/user-form" class="color_white_a_href">Add User</a>
+        </button>
+    </p>
+
+</div>
+
+<div align="left" sec:authorize="isAuthenticated()" class="divs" id="table1_div">
+    <hr>
+    <h2>Selections Of The Tasks</h2>
+    <p>This app will help you to set a higher level of efficiency and effectiveness, using the technique of Brian Tracy:
+        the ABCDE Method. You just need to add all your tasks of a day based on their difficulty and this app will
+        organize them.</p>
+    <p>"A" stands for "very important" something you must do. There can be serious negative consequences if you don’t do
+        it. This one being with the highest level of priority, it will require some time to finish it, so, you need to
+        separate it in maximum 3 subtasks, to take effect.</p>
+    <p>"B" stands for "important" something you should do. This is not as important as your 'A' tasks. There are only
+        minor negative consequences if it is not completed. Like the 'A' task, you need to separate this task, but in 2
+        subtasks maximum, to take effect.</p>
+    <p>"C" stands for things that are "nice to do" but which are not as important as 'A' or 'B' tasks. There are no
+        negative consequences for not completing it.</p>
+    <p>"D" stands for "delegate." You can assign this task to someone else who can do the job instead of you.</p>
+    <p>"E" stands for "eliminate, whenever possible." You should eliminate every single activity you possibly can, to
+        free up your time.</p>
+    <hr>
+    <h3>Create another task:
+        <button>
+            <a href="/tasks/task-form1" class="color_white_a_href">Create New Task</a>
+        </button>
+    </h3>
+    <h3 th:if="${allTasksOfUser.size()}!=0">This is the table with all the tasks:</h3>
+    <table th:if="${allTasksOfUser.size()}!=0" class="schedule_table" align="center">
+        <thead>
+        <tr class="schedule_table">
+            <th>TaskId</th>
+            <th>Start Hour</th>
+            <th>Start Minute</th>
+            <th>End Hour</th>
+            <th>End Minute</th>
+            <th>Category</th>
+            <th>SubCategory</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Important</th>
+            <th>Subtasks</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${allTasksOfUser}" class="schedule_table">
+            <td th:text="${task.getTaskId()}"></td>
+            <td th:text="${task.getStartHour()}"></td>
+            <td th:text="${task.getStartMinute()}"></td>
+            <td th:text="${task.getEndHour()}"></td>
+            <td th:text="${task.getEndMinute()}"></td>
+            <td th:text="${task.getCategory()}"></td>
+            <td th:text="${task.getSubCategory()}"></td>
+            <td th:text="${task.getName()}"></td>
+            <td th:text="${task.getSubject()}"></td>
+            <td th:text="${task.getImportant()}"></td>
+            <td id="subtasks_table">
+
+                <table class="schedule_table"
+                       th:if="${(task.getCategory() == 'A' || task.getCategory() == 'B') && task.getSubtasks().size()>0}">
+                    <thead>
+                    <tr class="schedule_table" id="thead_subtasks">
+                        <th>Subtask Name</th>
+                        <th>Subtask Time</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="schedule_table" th:each="subtask: ${task.getSubtasks()}">
+                        <td th:text="${subtask.getName()}"></td>
+                        <td th:text="${subtask.getTime()}"></td>
+                        <td class="schedule_table">
+                            <a th:href="${'/subtasks/subTask-form/'+ subtask.getSubtaskId()}">Edit Subtask</a>
+                            <br><br>
+                            <a th:href="${'/subtasks/delete/' + subtask.getSubtaskId()}">Delete Subtask</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <a th:if="${task.getCategory()=='A' && task.getSubtasks()!=null && task.getSubtasks().size()<3 ||
+                                task.getCategory()=='B' && task.getSubtasks()!=null && task.getSubtasks().size()<2}"
+                   th:href="${'/subtasks/subTask-form/add/'+ task.getTaskId()}">Add Subtask</a>
+                <br><br>
+                <a th:href="${'tasks/task-form1/' + task.getTaskId()}">Edit Task</a>
+                <br><br>
+                <a th:href="${'/tasks/delete/' + task.getTaskId()}">Delete this task</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div sec:authorize="isAuthenticated()" class="divs" th:if="${allTasksOfUser.size()}!=0" align="center">
+    <hr>
+    <h2 class="titlu_pagina">The Final Schedule</h2>
+    <table class="schedule_table">
+        <thead>
+        <tr class="schedule_table">
+            <th>Task Id</th>
+            <th>Start Hour</th>
+            <th>Start Minute</th>
+            <th>End Hour</th>
+            <th>End Minute</th>
+            <th>Category</th>
+            <th>Subcategory</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Important</th>
+            <th>Subtasks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="schedule_table" th:if="${task1.getStartHour()!=null}" th:each="task1 : ${orderedTasks}">
+            <td th:text="${task1.getTaskId()}"></td>
+            <td th:text="${task1.getStartHour()}"></td>
+            <td th:text="${task1.getStartMinute()}"></td>
+            <td th:text="${task1.getEndHour()}"></td>
+            <td th:text="${task1.getEndMinute()}"></td>
+            <td th:text="${task1.getCategory()}"></td>
+            <td th:text="${task1.getSubCategory()}"></td>
+            <td th:text="${task1.getName()}"></td>
+            <td th:text="${task1.getSubject()}"></td>
+            <td th:text="${task1.getImportant()}"></td>
+            <td>
+                <span th:each="subtask,stat: ${task1.getSubtasks()}"
+                      th:text="!(${stat.last})?${subtask.name}+', ':${subtask.name}">
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br><br>
+</div>
+</body>
+</html>

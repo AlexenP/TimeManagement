@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<h2 align="center">Add or edit an user</h2>
+<form action="/users/save" method="post" th:object="${user}" class="user_form">
+    <input type="hidden" name="userId" th:field="*{userId}">
+    First name: <input type="text" name="firstName" placeholder="firstName" th:required="required"
+                       th:field="*{firstName}">
+    <br><br>
+    Last name: <input type="text" name="lastName" placeholder="lastName" th:required="required" th:field="*{lastName}">
+    <br><br>
+    What time does the user start working? (startHour) <input type="number" name="startHour" min="0" max="23"
+                                                              th:required="required" th:field="*{startHour}">
+    <br><br>
+    What time does the user end working? (finish hour) <input type="number" name="finishHour" min="0" max="23"
+                                                              th:required="required" th:field="*{finishHour}">
+    <br><br>
+    Select the level of work (it will depend for the pause between the tasks and the time required for the tasks):
+    <label>
+        <select th:field="*{workLevel}">
+            <option value="1">Chill</option>
+            <option value="2">Normal</option>
+            <option value="3">Intense</option>
+        </select>
+    </label>
+    <br><br>
+    Username: <input type="text" name="username" placeholder="username" th:required="required" th:field="*{username}">
+    <br><br>
+    Password: <input type="password" name="password" placeholder="password" th:required="required"
+                     th:field="*{password}">
+    <br><br>
+    <input type="submit" value="save">
+</form>
+
+</body>
+</html>

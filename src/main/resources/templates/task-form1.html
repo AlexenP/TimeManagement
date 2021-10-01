@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Task</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div align="center">
+    <h1>Create New/ Edit Task</h1>
+    <br>
+    <form action="/tasks/save" th:object="${task}" method="post">
+        <table border="0" cellpadding="10">
+            <input type="hidden" name="taskId" th:field="*{taskId}">
+            <input type="hidden" name="userId" th:field="*{userId}">
+            <tr>
+                <td>Task Name:</td>
+                <td><input type="text" placeholder="Name" th:field="*{name}" ></td>
+            </tr>
+            <tr>
+                <td>Category:</td>
+                <td id="category_form">
+                    <label>
+                        <select th:field="*{category}">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Subject:</td>
+                <td><input type="text" placeholder="Subject" th:field="*{subject}"></td>
+            </tr>
+            <tr>
+                <td>
+
+                </td>
+                <td align="right">
+                    <input type="submit" value="Salvati Task">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
